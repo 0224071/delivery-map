@@ -1,24 +1,21 @@
 <template>
+  <Aside>
+    內容放這裡
+  </Aside>
   <main class="d-flex flex-column">
-
-    <FoodPanda>
-      <template v-slot:default={locations,shops}>
-      <Map class="map" :locs="locations" :shops="shops" />
-      </template>
-    </FoodPanda>
+    <Map class="map" />
   </main>
 
 </template>
 
 <script>
-import Map from "./components/Map.vue";
-import FoodPanda from "./components/FoodPanda.vue";
-
+import Map from "./components/Map";
+import Aside from "./components/Aside";
 export default {
   name: "App",
   components: {
     Map,
-    FoodPanda,
+    Aside,
   },
 };
 </script>

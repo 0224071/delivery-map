@@ -22,8 +22,11 @@
     "vuex": "^4.0.0"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.15.2",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
-    "@vue/compiler-sfc": "^3.0.0"
+    "@vue/compiler-sfc": "^3.0.0",
+    "sass": "^1.32.8",
+    "sass-loader": "^10.1.1"
   }
 }

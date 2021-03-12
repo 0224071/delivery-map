@@ -2,11 +2,11 @@ import { createStore } from "vuex";
 import axios from "axios";
 const FP_Module = {
   state: () => ({
-    shopData: null,
+    fp_data: null,
   }),
   mutations: {
     setData(state, { data }) {
-      state.shopData = data;
+      state.fp_data = data;
     },
   },
   actions: {
