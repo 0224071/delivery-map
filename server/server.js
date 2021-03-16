@@ -20,6 +20,7 @@ function doRequest(link) {
   });
 }
 async function getFoodPandaInfo(body) {
+  console.time("取得時間");
   const $ = cheerio.load(body); // 載入 body
   const result = []; // 建立一個儲存結果的容器
   const shop_list = $(".vendor-list li a"); // 爬最外層的 li
@@ -48,10 +49,9 @@ async function getFoodPandaInfo(body) {
     // 建立物件並(push)存入結果
     result.push(Object.assign({ name, rating, comments_count, menu_list,info }));
   }
-  // 在終端機(console)列出結果
-  console.log(result);
+  console.timeEnd("取得時間");
   // 寫入 result.json 檔案
-  fs.writeFileSync("./public/static/result.json", JSON.stringify(result));
+  fs.writeFileSync("../public/static/result.json", JSON.stringify(result));
 }
 const getFoodPandaDetail = function(body) {
   const $ = cheerio.load(body); // 載入 body
