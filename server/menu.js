@@ -48,7 +48,6 @@ const getFoodPandaMenuInfo = function(body) {
   }
   return result;
 };
-
 process.on("message", async (parms) => {
   let info = await doRequest(foodpandaUrl + parms.url).then(
     getFoodPandaDetail
@@ -57,6 +56,5 @@ process.on("message", async (parms) => {
   let menu_list = await doRequest(foodpandaUrl + parms.url).then(
     getFoodPandaMenuInfo
   );
-
   process.send({ ...parms.info, info, menu_list });
 });
