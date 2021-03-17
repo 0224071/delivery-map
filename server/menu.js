@@ -1,8 +1,8 @@
 const request = require("request");
 const cheerio = require("cheerio");
 
-//foodpanda網址
-const foodpandaUrl = "https://www.foodpanda.com.tw";
+
+
 const doRequest = function(link) {
   return new Promise(function(resolve, reject) {
     request({ url: link, method: "GET" }, function(error, res, body) {
@@ -49,12 +49,12 @@ const getFoodPandaMenuInfo = function(body) {
   return result;
 };
 process.on("message", async (parms) => {
-  let info = await doRequest(foodpandaUrl + parms.url).then(
+  let info = await doRequest( parms.shopUrl).then(
     getFoodPandaDetail
   );
 
-  let menu_list = await doRequest(foodpandaUrl + parms.url).then(
+  let menu_list = await doRequest(parms.shopUrl).then(
     getFoodPandaMenuInfo
   );
-  process.send({ ...parms.info, info, menu_list });
+  process.send({ ...parms, info, menu_list });
 });

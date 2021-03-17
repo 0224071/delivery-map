@@ -21,7 +21,10 @@ async function getFoodPandaInfo(body) {
 
   for (let i = 0; i < shop_list.length; i++) {
     let shop = shop_list[i];
-    let shopUrl = shop.attribs.href; //連結
+    let shopUrl = foodpandaUrl+shop.attribs.href; //連結
+    let shopImg = $(shop)
+      .find(".vendor-picture")
+      .attr("data-src");
     let name = $(shop)
       .find(".vendor-info .name")
       .text(); //店家名稱
@@ -37,7 +40,7 @@ async function getFoodPandaInfo(body) {
         .replace(")", "");
     }
 
-    result.push({ info: { name, rating, comments_count }, url: shopUrl });
+    result.push({ name, rating, comments_count, shopImg, shopUrl });
   }
   let arr = await cluster.exec(result, "menu.js");
   return arr;

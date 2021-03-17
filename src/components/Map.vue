@@ -15,7 +15,9 @@ import { mapActions, mapState } from "vuex";
 
 let mymap = null;
 export default {
-  props: {},
+  props: {
+    fp_data: { default: [] },
+  },
   data() {
     return {
       currMarker: null,
@@ -27,14 +29,10 @@ export default {
     await this.setData();
   },
 
-  computed: {
-    //外送資料
-    ...mapState("fp_module", ["fp_data"]),
-  },
+ 
 
   watch: {
     fp_data(newValue) {
-      let markerArr = [];
       const markers = new L.markerClusterGroup();
       newValue
         .map((item) => {
@@ -57,7 +55,7 @@ export default {
               opacity: 1.0,
             })
             .bindPopup(this.popupTemplate(item));
-            marker.info={...item};
+          marker.info = { ...item };
           return marker;
         })
         .forEach((item) => {
