@@ -2,11 +2,15 @@ import { createStore } from "vuex";
 import axios from "axios";
 const FP_Module = {
   state: () => ({
-    fp_data: null,
+    info: null,
+    markers: null,
   }),
   mutations: {
     setData(state, { data }) {
-      state.fp_data = data;
+      state.info = data;
+    },
+    setMarkersData(state, { data }) {
+      state.markers = data;
     },
   },
   actions: {
@@ -14,6 +18,9 @@ const FP_Module = {
       let json = await axios.get("./static/result.json");
       let data = json.data;
       commit("setData", { data });
+    },
+    setMarkersData({ commit }, data) {
+      commit("setMarkersData", { data });
     },
   },
   namespaced: true,
