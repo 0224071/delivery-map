@@ -1,0 +1,14 @@
+$primary-color: rgb(138, 196, 208);
+$primary-darken-color: darken($primary-color, 20%);
+$primary-lighten-color: lighten($primary-color, 20%);
+$primary-shadow-color: rgba(138, 196, 208, 0.4);
+$strong-color: rgb(40, 82, 122);
+$strong-lighten-color: lighten($strong-color, 20%);
+$strong-shadow-color: rgba(40, 82, 122, 0.4);
+
+$primary: $primary-color;
+$info: $strong-color;
+$theme-colors: (
+  "foodpanda-color": #D70F64,
+  "ubereats-color": rgb(26, 26, 26)
+);

@@ -14,7 +14,6 @@
     "core-js": "^3.6.5",
     "jquery": "^3.6.0",
     "leaflet": "^1.7.1",
-    "leaflet.markercluster": "^1.4.1",
     "popper.js": "^1.16.1",
     "request": "^2.88.2",
     "vue": "^3.0.0",
@@ -23,6 +22,7 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.15.2",
+    "@vue-leaflet/vue-leaflet": "^0.6.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "@vue/compiler-sfc": "^3.0.0",

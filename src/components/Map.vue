@@ -1,125 +1,111 @@
 <template>
 
-  <div id="map">
+  <l-map
+    :center="[25.042474, 121.513729]"
+    v-model="zoom"
+    v-model:zoom="zoom"
+  >
+    <l-tile-layer
+      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      :options="{maxZoom: maxZoom,maxNativeZoom :maxZoom}"
+    ></l-tile-layer>
+    <l-marker
+      v-for="data in fp_data_Computed"
+      :key="data.shopUrl"
+      :lat-lng="data.info.location"
+      :ref="setMarkerRef"
+      :info="data"
+    >
+      <l-icon
+        :icon-url="FpIconUrl"
+        :icon-size="iconSize"
+      />
 
-  </div>
+      <l-tooltip>
+        {{data.name}}
+      </l-tooltip>
+      <l-popup>
+        lol
+      </l-popup>
+    </l-marker>
+  </l-map>
+
 </template>
 
 <script>
-import L from "leaflet";
+import {
+  LMap,
+  LIcon,
+  LTileLayer,
+  LMarker,
+  LControlLayers,
+  LTooltip,
+  LPopup,
+} from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
-import "leaflet.markercluster/dist/MarkerCluster.css";
-import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-import "leaflet.markercluster/dist/leaflet.markercluster.js";
-import { mapActions, mapState } from "vuex";
-
+import { mapActions } from "vuex";
 let mymap = null;
 export default {
+  components: {
+    LMap,
+    LIcon,
+    LTileLayer,
+    LMarker,
+    LControlLayers,
+    LTooltip,
+    LPopup,
+  },
   props: {
     fp_data: { default: [] },
   },
   data() {
     return {
-      currMarker: null,
+      zoom: 18,
+      maxZoom: 20,
+      iconWidth: 25,
+      iconHeight: 25,
+      FpIconUrl: require("../assets/foodpanda.png"),
+      UbIconUrl: "",
+      MarkerRef: [],
     };
   },
-  async mounted() {
+  updated() {},
+  mounted() {
     //初始化地圖
-    this.initmap();
-    await this.setData();
   },
-
- 
-
-  watch: {
-    fp_data(newValue) {
-      const markers = new L.markerClusterGroup();
-      newValue
-        .map((item) => {
-          const center = [...item.info.location.split(",")];
-
-          const customIcon = L.icon({
-            iconUrl: require("../assets/foodpanda.png"),
-            iconSize: [25, 25],
-          });
-          const marker = L.marker(
-            new L.LatLng(parseFloat(center[0]), parseFloat(center[1])),
-            {
-              icon: customIcon,
-            }
-          )
-            .bindTooltip(item.name, {
-              direction: "top", // right、left、top、bottom、center。default: auto
-              sticky: true, // true 跟著滑鼠移動。default: false
-              permanent: false, // 是滑鼠移過才出現，還是一直出現
-              opacity: 1.0,
-            })
-            .bindPopup(this.popupTemplate(item));
-          marker.info = { ...item };
-          return marker;
+  computed: {
+    fp_data_Computed() {
+      this.MarkerRef = [];
+      console.log(this.MarkerRef);
+      if (!this.fp_data) return [];
+      return this.fp_data
+        .filter((item) => {
+          return item.info.location;
         })
-        .forEach((item) => {
-          markers.addLayer(item);
+        .map((item) => {
+          if (item.info.location)
+            item.info.location = item.info.location.split(",");
+          return item;
         });
-      mymap.addLayer(markers);
+    },
+    iconSize() {
+      return [this.iconWidth, this.iconHeight];
+    },
+    markers() {
+      this.setMarkers(this.MarkerRef);
+      return this.MarkerRef;
     },
   },
-  methods: {
-    async initmap() {
-      mymap = L.map("map", {
-        center: [25.042474, 121.513729],
-        // 可以嘗試改變 zoom 的數值
-        // 筆者嘗試後覺得 18 的縮放比例是較適當的查詢範圍
-        zoom: 18,
-      });
-      mymap.on("moveend", (e) => {
-        var markerList = [];
 
-        mymap.eachLayer(function (layer) {
-          if (
-            layer instanceof L.Marker &&
-            mymap.getBounds().contains(layer.getLatLng())
-          ) {
-            markerList.push(layer);
-          }
-        });
-        this.currMarker = markerList;
-        console.log(markerList);
-      });
-      await L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 20,
-        maxNativeZoom: 18,
-      }).addTo(mymap);
-      document.querySelector(".leaflet-control-attribution").style.display =
-        "none";
-    },
-    popupTemplate(item) {
-      let strMenu = "";
-      item.menu_list.forEach((m) => {
-        strMenu += `<tr>
-    <td>${m.name}</td>
-    <td>${m.price}</td>
-</tr>`;
-      });
-      strMenu = `
-      <table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>品名</th>
-            <th>價格</th>
-        </tr>
-    </thead>
-    <tbody>
-      ${strMenu}
-    </tbody>
-</table>`;
-      return (
-        `<h5>${item.name}</h5>
-` + strMenu
-      );
+  watch: {},
+  methods: {
+    setMarkerRef(el) {
+      if (el) {
+        this.MarkerRef.push(el);
+      }
     },
     ...mapActions("fp_module", {
-      setData: "setShopData",
+      setMarkers: "setMarkersData",
     }),
   },
 };

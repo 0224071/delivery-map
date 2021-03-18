@@ -1,12 +1,14 @@
 <template>
   <Aside title="外送查價平台">
-    <CardList :fp_data="fp_data"></CardList>
+    <CardList :fp_markers="fp_markers"></CardList>
   </Aside>
   <main class="d-flex flex-column">
+
     <Map
       class="map"
       :fp_data="fp_data"
     />
+
   </main>
 
 </template>
@@ -15,6 +17,7 @@
 import Map from "./components/Map";
 import Aside from "./components/Aside";
 import CardList from "./components/CardList";
+
 import { mapActions, mapState } from "vuex";
 export default {
   name: "App",
@@ -28,7 +31,10 @@ export default {
   },
   computed: {
     //外送資料
-    ...mapState("fp_module", ["fp_data"]),
+    ...mapState("fp_module", {
+      fp_data: (state) => state.info,
+      fp_markers: (state) => state.markers,
+    }),
   },
 
   methods: {

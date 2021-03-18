@@ -1,7 +1,10 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import "bootstrap"; // Import js file
-import "bootstrap/scss/bootstrap.scss"; 
+import "./assets/scss/main.scss"; 
+import "./assets/css/tailwind.css"
+
+
 import axios from "axios";
 import VueAxios from "vue-axios";
 import store from './store';

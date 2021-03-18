@@ -36,8 +36,14 @@
       ></i>
 
     </div>
-    <div class="circle-button aside__backbtn" @click="gotoTop">
-      <i class="fa fa-angle-up" aria-hidden="true"></i>
+    <div
+      class="circle-button aside__backbtn"
+      @click="gotoTop"
+    >
+      <i
+        class="fa fa-angle-up"
+        aria-hidden="true"
+      ></i>
     </div>
   </aside>
 
@@ -74,17 +80,12 @@ export default {
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
+@import "../assets/scss/theme/food";
 $aside-width: 520px;
 $aside__button-width: 25px;
 $aside__button-height: 100px;
 $aside__button-color: rgba(255, 255, 255, 0.8);
-$primary-color: rgb(138, 196, 208);
-$primary-darken-color: darken($primary-color, 20%);
-$primary-lighten-color: lighten($primary-color, 20%);
-$primary-shadow-color: rgba(138, 196, 208,0.4);
-$strong-color:rgb(40, 82, 122);
-$strong-lighten-color:lighten($strong-color,20%);
-$strong-shadow-color:rgba(40, 82, 122,0.4);
+
 /* width */
 ::-webkit-scrollbar {
   width: 10px;
@@ -137,6 +138,7 @@ $strong-shadow-color:rgba(40, 82, 122,0.4);
     flex: 1 0 100%;
     overflow-y: auto;
     scroll-behavior: smooth;
+    padding: 0.8rem 1.2rem;
   }
   &__switch {
     position: fixed;
@@ -152,10 +154,10 @@ $strong-shadow-color:rgba(40, 82, 122,0.4);
     justify-content: center;
     cursor: pointer;
   }
-  &__backbtn{
+  &__backbtn {
     position: fixed;
     right: 15px;
-    bottom:5px;
+    bottom: 5px;
   }
   &--open {
     transform: translateX(0);
@@ -164,10 +166,10 @@ $strong-shadow-color:rgba(40, 82, 122,0.4);
     width: 40px;
     height: 40px;
     font-weight: 500;
-     font-size: 1.3rem;
+    font-size: 1.3rem;
     color: #000;
     background-color: $primary-lighten-color;
-    opacity:0.9;
+    opacity: 0.9;
     border: none;
     border-radius: 45px;
     box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
@@ -180,11 +182,11 @@ $strong-shadow-color:rgba(40, 82, 122,0.4);
   }
 
   .circle-button:hover {
-    background-color:$primary-color;
+    background-color: $primary-color;
     box-shadow: 0px 15px 20px $primary-shadow-color;
     color: #fff;
     transform: translateY(-7px);
-    opacity:1;
+    opacity: 1;
   }
 }
 </style>
