@@ -1,9 +1,17 @@
 <template>
   <Aside title="外送查價平台">
-    <Card-list :fp_markers="fp_markers"></Card-list>
+    <Card-list :fp_data="fp_data"></Card-list>
   </Aside>
+
   <main class="d-flex flex-column">
-    <Map class="map" :fp_data="fp_data" />
+  <GPS
+    top="80"
+    right="12"
+  />
+    <Map
+      class="map"
+      :fp_data="fp_data"
+    />
   </main>
 </template>
 
@@ -11,23 +19,24 @@
 import Map from "./components/Map";
 import Aside from "./components/Aside";
 import CardList from "./components/CardList";
+import GPS from "./components/GPS";
 
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "App",
   components: {
     Map,
     Aside,
     CardList,
+    GPS,
   },
   async mounted() {
     await this.setData();
   },
   computed: {
     //外送資料
-    ...mapState("fp_module", {
-      fp_data: (state) => state.info,
-      fp_markers: (state) => state.markers,
+    ...mapGetters("fp_module", {
+      fp_data: "infoFiltered",
     }),
   },
 
@@ -35,14 +44,6 @@ export default {
     ...mapActions("fp_module", {
       setData: "setShopData",
     }),
-  },
-  watch: {
-    fp_markers: {
-      handler(newValue) {
-        console.log(newValue);
-      },
-      immediate: true,
-    },
   },
 };
 </script>

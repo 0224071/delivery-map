@@ -1,100 +1,3 @@
-<template>
-  <div class="p-2">
-    <input
-      type="search"
-      class="form-control"
-      v-model.trim="filterString"
-      placeholder="請輸入餐品、餐廳名稱"
-    >
-  </div>
-  <div
-    class="block my-2"
-    v-for="data in dataFiltered"
-    :key="data.name"
-  >
-    <!-- <div class="block__image"></div> -->
-    <div class="block__body">
-      <div class="block__body__section row">
-        <div class="col-12">
-          <span class=" tracking-wide text-sm font-bold text-gray-400">
-            {{data.info.info.address}}
-          </span>
-        </div>
-        <div class="col-12"><span class="text-3xl text-gray-900 mr-2">{{data.info.name}}</span><i
-            class="fa fa-map-marker-alt text-blue-600 text-2xl cursor-pointer"
-            aria-hidden="true"
-          ></i></div>
-        <div class="col-12">
-          <sapn class="text-gray-600">{{data.info.rating}}</sapn>
-        </div>
-      </div>
-      <div class="block__body__section row no-gutters border-t border-gray-300">
-        <div class="col-6"> <a
-            class="btn btn-foodpanda-color w-100 rounded-none"
-            @click.prevent="gotoUrl(data.info.shopUrl)"
-          >FoodPanda</a></div>
-        <div class="col-6"> <a
-            class="btn btn-ubereats-color w-100 rounded-none"
-            @click.prevent="gotoUrl(data.info.shopUrl)"
-          >Uber Eats</a></div>
-      </div>
-      <div class="block__body__section row border-t border-gray-300">
-
-      </div>
-    </div>
-  </div>
-
-</template>
-
-<script>
-export default {
-  props: {
-    fp_markers: {
-      default: [],
-    },
-  },
-  data() {
-    return {
-      filterString: "",
-    };
-  },
-  computed: {
-    dataFiltered() {
-      if (!this.fp_markers) return [];
-      return this.fp_markers
-        .filter((item) => {
-          let name = item.$attrs.info.name;
-          let menuList = item.$attrs.menu_list;
-          return this.filterString
-            ? name.includes(this.filterString) ||
-                this.menuFiltered(menuList, this.filterString)
-            : true;
-        })
-        .map((item) => {
-          let info = item.$attrs.info;
-          let markerObj = item;
-          return {
-            info,
-            markerObj,
-          };
-        });
-
-    },
-  },
-
-  methods: {
-    gotoUrl(url) {
-      window.open(url, "_blank");
-    },
-    menuFiltered(list, str) {
-      return list.some((item) => {
-        return item.name.includes(str);
-      });
-    },
-  },
-};
-</script>
-
 <style scoped lang="scss">
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
@@ -138,3 +41,102 @@ export default {
   }
 }
 </style>
+
+<template>
+  <div class="p-2">
+    <input
+      type="search"
+      class="form-control"
+      v-model.trim="filterString"
+      placeholder="請輸入餐品、餐廳名稱"
+    >
+  </div>
+  <div
+    class="block my-2"
+    v-for="data in dataFiltered"
+    :key="data.name"
+  >
+    <!-- <div class="block__image"></div> -->
+    <div class="block__body">
+      <div class="block__body__section row">
+        <div class="col-12">
+          <span class=" tracking-wide text-sm font-bold text-gray-400">
+            {{data.info.address}}
+          </span>
+        </div>
+        <div class="col-12"><span class="text-3xl text-gray-900 mr-2">{{data.name}}</span><span @click="selectPos(data.info.location)">
+            <i
+              class="fa fa-map-marker-alt text-blue-600 text-2xl cursor-pointer"
+              aria-hidden="true"
+            ></i></span></div>
+        <div class="col-12">
+          <sapn class="text-gray-600">{{data.rating}}</sapn>
+        </div>
+      </div>
+      <div class="block__body__section row no-gutters border-t border-gray-300">
+        <div class="col-6"> <a
+            class="btn btn-foodpanda-color w-100 rounded-none"
+            @click.prevent="gotoUrl(data.shopUrl)"
+          >FoodPanda</a></div>
+        <div class="col-6"> <a
+            class="btn btn-ubereats-color w-100 rounded-none"
+            @click.prevent="gotoUrl(data.shopUrl)"
+          >Uber Eats</a></div>
+      </div>
+      <div class="block__body__section row border-t border-gray-300">
+
+      </div>
+    </div>
+  </div>
+
+</template>
+
+<script>
+import { mapState, mapMutations } from "vuex";
+export default {
+  props: {
+    fp_data: {
+      default: [],
+    },
+  },
+  data() {
+    return {
+      filterString: "",
+    };
+  },
+  computed: {
+    dataFiltered() {
+      if (!this.fp_data) return [];
+      return this.fp_data.filter((item) => {
+        let name = item.name;
+        let menuList = item.menu_list;
+        return this.filterString
+          ? name.includes(this.filterString) ||
+              this.menuFiltered(menuList, this.filterString)
+          : true;
+      });
+    },
+    ...mapState("map_module", {
+      focusMarker: "focusMarker",
+    }),
+  },
+  watch: {
+    focusMarker(newValue) {
+      this.filterString = newValue.name;
+    },
+  },
+  methods: {
+    gotoUrl(url) {
+      window.open(url, "_blank");
+    },
+    menuFiltered(list, str) {
+      return list.some((item) => {
+        return item.name.includes(str);
+      });
+    },
+
+    ...mapMutations("map_module", ["selectPos"]),
+  },
+};
+</script>
+

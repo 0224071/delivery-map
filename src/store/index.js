@@ -1,16 +1,13 @@
 import { createStore } from "vuex";
 import axios from "axios";
-const FP_Module = {
+
+const fp_module = {
   state: () => ({
     info: null,
-    markers: null,
   }),
   mutations: {
     setData(state, { data }) {
       state.info = data;
-    },
-    setMarkersData(state, { data }) {
-      state.markers = data;
     },
   },
   actions: {
@@ -19,14 +16,44 @@ const FP_Module = {
       let data = json.data;
       commit("setData", { data });
     },
-    setMarkersData({ commit }, data) {
-      commit("setMarkersData", { data });
+  },
+  getters: {
+    infoFiltered(state) {
+      if (!state.info) return [];
+      let newArr = [];
+      state.info.forEach((item) => {
+        if (item.info.location) {
+          item.info.location = item.info.location.split(",");
+          newArr.push(item);
+        }
+      });
+      return newArr;
     },
+  },
+  namespaced: true,
+};
+const map_module = {
+  state: () => ({
+    focusMarker: null,
+    userPos:null,
+    selectedPos:null,
+  }),
+  mutations: {
+    selectInfo(state,  data ) {
+      state.focusMarker = data;
+    },
+    setUserPos(state,pos){
+      state.userPos=pos;
+    },
+    selectPos(state,pos){
+      state.selectedPos=pos
+    }
   },
   namespaced: true,
 };
 export default createStore({
   modules: {
-    fp_module: FP_Module,
+    fp_module,
+    map_module,
   },
 });
