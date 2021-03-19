@@ -69,7 +69,6 @@ export default {
   },
   computed: {
     fp_data_Computed() {
-
       if (!this.fp_data) return [];
       return this.fp_data
         .filter((item) => {
