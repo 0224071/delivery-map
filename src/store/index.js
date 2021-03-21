@@ -9,6 +9,7 @@ const fp_module = {
     setData(state, { data }) {
       state.info = data;
     },
+
   },
   actions: {
     async setShopData({ commit }) {
@@ -35,19 +36,16 @@ const fp_module = {
 const map_module = {
   state: () => ({
     focusMarker: null,
-    userPos:null,
-    selectedPos:null,
+    userPos: null,
   }),
   mutations: {
-    selectInfo(state,  data ) {
+    selectInfo(state, data) {
       state.focusMarker = data;
     },
-    setUserPos(state,pos){
-      state.userPos=pos;
+    setUserPos(state, pos) {
+      state.userPos = pos;
     },
-    selectPos(state,pos){
-      state.selectedPos=pos
-    }
+    
   },
   namespaced: true,
 };

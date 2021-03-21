@@ -20,17 +20,13 @@
   <div
     class="leaflet-control-gps"
     :style="postionStyle"
-    @click="getPos(setPos)"
+    @click="getPos(setView)"
   >
-    <i
-      class="fa fa-crosshairs"
-      aria-hidden="true"
-    ></i>
+    <i class="fa fa-crosshairs" aria-hidden="true"></i>
   </div>
 </template>
 
 <script>
-import { mapMutations } from "vuex";
 export default {
   props: {
     top: {
@@ -51,7 +47,7 @@ export default {
   },
   mounted() {
     //Dom Render Finish
-    // this.getPos(this.setPos);
+    // this.getPos(this.setView);
   },
   computed: {
     postionStyle() {
@@ -92,10 +88,10 @@ export default {
           console.log(err);
         });
     },
-
-    ...mapMutations("map_module", {
-      setPos: "setUserPos",
-    }),
+    setView(pos) {
+        this.$emit("set-view", pos);
+      this.$store.commit("map_module/setUserPos", pos);
+    },
   },
 };
 </script>

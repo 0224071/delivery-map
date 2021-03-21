@@ -1,80 +1,3 @@
-<template>
-  <aside
-    class="aside"
-    :class="{'aside--open':isOpen}"
-  >
-    <header class="aside__hedader">
-      <strong class="aside__hedader__title">
-        <span>
-          {{title}}
-        </span>
-      </strong>
-      <button
-        class="close aside__hedader__close"
-        @click="isOpen=false"
-      >
-        <i
-          class="fa fa-times"
-          aria-hidden="true"
-        ></i>
-      </button>
-    </header>
-    <div
-      class="aside__body"
-      ref="body"
-      @scroll="scrollEvent"
-    >
-      <slot></slot>
-    </div>
-    <div
-      class="aside__switch"
-      @click="toggle"
-    > <i
-        class="fa"
-        :class="{'fa-angle-right':!isOpen,'fa-angle-left':isOpen}"
-        aria-hidden="true"
-      ></i>
-
-    </div>
-    <div
-      class="circle-button aside__backbtn"
-      @click="gotoTop"
-    >
-      <i
-        class="fa fa-angle-up"
-        aria-hidden="true"
-      ></i>
-    </div>
-  </aside>
-
-</template>
-
-<script>
-export default {
-  props: {
-    title: {
-      default: "Aside Title",
-    },
-  },
-  data() {
-    return {
-      isOpen: true,
-      scrollTop: 0,
-    };
-  },
-  methods: {
-    toggle() {
-      this.isOpen = !this.isOpen;
-    },
-    scrollEvent(e) {
-      this.scrollTop = e.target.scrollTop;
-    },
-    gotoTop() {
-      this.$refs.body.scrollTop = 0;
-    },
-  },
-};
-</script>
 
 <style lang="scss" scoped>
 @import "~bootstrap/scss/functions";
@@ -84,7 +7,7 @@ export default {
 $aside-width: 520px;
 $aside__button-width: 25px;
 $aside__button-height: 100px;
-$aside__button-color: rgba(255, 255, 255, 0.8);
+$aside__button-color: $primary-color;
 
 /* width */
 ::-webkit-scrollbar {
@@ -93,7 +16,7 @@ $aside__button-color: rgba(255, 255, 255, 0.8);
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  // background: #f1f1f1;
 }
 
 /* Handle */
@@ -122,6 +45,15 @@ $aside__button-color: rgba(255, 255, 255, 0.8);
   @include media-breakpoint-up(sm) {
     width: $aside-width;
   }
+  // &::after {
+  //   content: "";
+  //   position: fixed;
+  //   left: 0;
+  //   right: 0;
+  //   top: 0;
+  //   height: 85px;
+  //   background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
+  // }
   &__hedader {
     font-size: 1.5rem;
     padding: 0.5rem 1rem;
@@ -130,6 +62,9 @@ $aside__button-color: rgba(255, 255, 255, 0.8);
     flex: 0 1 auto;
     align-items: center;
     justify-content: space-between;
+    position: relative;
+    clip-path: inset(0px 0px -15px 0px);
+    z-index: 2;
     &__close {
       font-size: 1rem;
     }
@@ -139,6 +74,10 @@ $aside__button-color: rgba(255, 255, 255, 0.8);
     overflow-y: auto;
     scroll-behavior: smooth;
     padding: 0.8rem 1.2rem;
+    position: relative;
+    &:hover {
+      overflow-y: auto;
+    }
   }
   &__switch {
     position: fixed;
@@ -148,11 +87,14 @@ $aside__button-color: rgba(255, 255, 255, 0.8);
     width: $aside__button-width;
     height: $aside__button-height;
     background-color: $aside__button-color;
+    opacity: 0.9;
     font-size: 2.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    box-shadow: 0px 0px 2px $primary-shadow-color;
+    clip-path: inset(-15px -15px -15px 0px);
   }
   &__backbtn {
     position: fixed;
@@ -169,10 +111,9 @@ $aside__button-color: rgba(255, 255, 255, 0.8);
     font-size: 1.3rem;
     color: #000;
     background-color: $primary-lighten-color;
-    opacity: 0.9;
     border: none;
     border-radius: 45px;
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease 0s;
     cursor: pointer;
     outline: none;
@@ -190,3 +131,69 @@ $aside__button-color: rgba(255, 255, 255, 0.8);
   }
 }
 </style>
+
+<template>
+  <aside class="aside" :class="{ 'aside--open': isOpen }">
+    <header class="aside__hedader" :style="headerShadow">
+      <strong class="aside__hedader__title">
+        <span>
+          {{ title }}
+        </span>
+      </strong>
+      <button class="close aside__hedader__close" @click="isOpen = false">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </button>
+    </header>
+    <div class="aside__body" ref="body" @scroll="scrollEvent">
+      <slot></slot>
+    </div>
+    <div class="aside__switch" @click="toggle">
+      <i
+        class="fa"
+        :class="{ 'fa-angle-right': !isOpen, 'fa-angle-left': isOpen }"
+        aria-hidden="true"
+      ></i>
+    </div>
+    <div
+      class="circle-button aside__backbtn"
+      @click="gotoTop"
+      v-show="scrollTop"
+    >
+      <i class="fa fa-angle-up" aria-hidden="true"></i>
+    </div>
+  </aside>
+</template>
+
+<script>
+export default {
+  props: {
+    title: {
+      default: "Aside Title",
+    },
+  },
+  data() {
+    return {
+      isOpen: true,
+      scrollTop: 0,
+    };
+  },
+  computed: {
+    headerShadow() {
+      return this.scrollTop
+        ? { "box-shadow": "0 1px 5px rgba(0, 0, 0, 0.3)" }
+        : {};
+    },
+  },
+  methods: {
+    toggle() {
+      this.isOpen = !this.isOpen;
+    },
+    scrollEvent(e) {
+      this.scrollTop = e.target.scrollTop;
+    },
+    gotoTop() {
+      this.$refs.body.scrollTop = 0;
+    },
+  },
+};
+</script>

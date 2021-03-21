@@ -1,17 +1,11 @@
 <template>
   <Aside title="外送查價平台">
-    <Card-list :fp_data="fp_data"></Card-list>
+    <Card-list :fp_data="fp_data" @set-view="setView"></Card-list>
   </Aside>
 
   <main class="d-flex flex-column">
-  <GPS
-    top="80"
-    right="12"
-  />
-    <Map
-      class="map"
-      :fp_data="fp_data"
-    />
+    <GPS top="80" right="12" @set-view="setView" />
+    <Map class="map" :fp_data="fp_data" ref="map" />
   </main>
 </template>
 
@@ -44,6 +38,9 @@ export default {
     ...mapActions("fp_module", {
       setData: "setShopData",
     }),
+    setView(pos) {
+      this.$refs.map.setView(pos);
+    },
   },
 };
 </script>

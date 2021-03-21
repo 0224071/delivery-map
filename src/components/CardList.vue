@@ -19,7 +19,7 @@
   background-clip: border-box;
   border-radius: 0.5rem;
   overflow: hidden;
-  box-shadow: 6px 6px 6px 1px rgb(0 0 0 / 10%);
+  box-shadow: 4px 4px 4px 1px rgb(0 0 0 / 10%);
   &__image {
     width: 100%;
     height: 14rem;
@@ -43,52 +43,60 @@
 </style>
 
 <template>
-  <div class="p-2">
+  <div>
     <input
       type="search"
       class="form-control"
       v-model.trim="filterString"
       placeholder="請輸入餐品、餐廳名稱"
-    >
+    />
   </div>
-  <div
-    class="block my-2"
-    v-for="data in dataFiltered"
-    :key="data.name"
-  >
+  <div class="block my-2" v-for="data in dataFiltered" :key="data.name">
     <!-- <div class="block__image"></div> -->
     <div class="block__body">
       <div class="block__body__section row">
         <div class="col-12">
-          <span class=" tracking-wide text-sm font-bold text-gray-400">
-            {{data.info.address}}
+          <span class="tracking-wide text-sm font-bold text-gray-400">
+            {{ data.info.address }}
           </span>
         </div>
-        <div class="col-12"><span class="text-3xl text-gray-900 mr-2">{{data.name}}</span><span @click="selectPos(data.info.location)">
+        <div class="col-12">
+          <span class="text-3xl text-gray-900 mr-2">{{ data.name }}</span
+          ><span
+            @click="
+              selectInfo(data);
+              setView(data.info.location);
+            "
+          >
             <i
               class="fa fa-map-marker-alt text-blue-600 text-2xl cursor-pointer"
               aria-hidden="true"
-            ></i></span></div>
+            ></i
+          ></span>
+        </div>
         <div class="col-12">
-          <sapn class="text-gray-600">{{data.rating}}</sapn>
+          <sapn class="text-gray-600">{{ data.rating }}</sapn>
         </div>
       </div>
       <div class="block__body__section row no-gutters border-t border-gray-300">
-        <div class="col-6"> <a
+        <div class="col-6">
+          <a
             class="btn btn-foodpanda-color w-100 rounded-none"
             @click.prevent="gotoUrl(data.shopUrl)"
-          >FoodPanda</a></div>
-        <div class="col-6"> <a
+            >FoodPanda</a
+          >
+        </div>
+        <div class="col-6">
+          <a
             class="btn btn-ubereats-color w-100 rounded-none"
             @click.prevent="gotoUrl(data.shopUrl)"
-          >Uber Eats</a></div>
+            >Uber Eats</a
+          >
+        </div>
       </div>
-      <div class="block__body__section row border-t border-gray-300">
-
-      </div>
+      <div class="block__body__section row border-t border-gray-300"></div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -122,7 +130,7 @@ export default {
   },
   watch: {
     focusMarker(newValue) {
-      this.filterString = newValue.name;
+      // this.filterString = newValue.name;
     },
   },
   methods: {
@@ -134,8 +142,12 @@ export default {
         return item.name.includes(str);
       });
     },
-
-    ...mapMutations("map_module", ["selectPos"]),
+    setView(pos) {
+      this.$emit("set-view", pos);
+    },
+    ...mapMutations("map_module", {
+      selectInfo: "selectInfo",
+    }),
   },
 };
 </script>
