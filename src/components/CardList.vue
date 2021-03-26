@@ -3,6 +3,9 @@
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 @import "../assets/scss/theme/_food.scss";
+.toolbox {
+  width: 100%;
+}
 .card {
   width: 100%;
 }
@@ -43,7 +46,7 @@
 </style>
 
 <template>
-  <div>
+  <div class="toolbox">
     <input
       type="search"
       class="form-control"
@@ -51,7 +54,12 @@
       placeholder="請輸入餐品、餐廳名稱"
     />
   </div>
-  <div class="block my-2" v-for="data in dataFiltered" :key="data.name">
+
+  <div
+    class="block my-2"
+    v-for="data in dataFiltered"
+    :key="data.name"
+  >
     <!-- <div class="block__image"></div> -->
     <div class="block__body">
       <div class="block__body__section row">
@@ -61,18 +69,18 @@
           </span>
         </div>
         <div class="col-12">
-          <span class="text-3xl text-gray-900 mr-2">{{ data.name }}</span
-          ><span
-            @click="
-              selectInfo(data);
-              setView(data.info.location);
-            "
-          >
+          <span class="text-3xl text-gray-900 mr-2">{{ data.name }}</span><span @click="
+            $emit('select',data.index);
+            setView(data.info.location); ">
             <i
-              class="fa fa-map-marker-alt text-blue-600 text-2xl cursor-pointer"
+              class="
+            fa
+            fa-map-marker-alt
+            text-blue-600
+            text-2xl
+            cursor-pointer"
               aria-hidden="true"
-            ></i
-          ></span>
+            ></i></span>
         </div>
         <div class="col-12">
           <sapn class="text-gray-600">{{ data.rating }}</sapn>
@@ -83,15 +91,13 @@
           <a
             class="btn btn-foodpanda-color w-100 rounded-none"
             @click.prevent="gotoUrl(data.shopUrl)"
-            >FoodPanda</a
-          >
+          >FoodPanda</a>
         </div>
         <div class="col-6">
           <a
             class="btn btn-ubereats-color w-100 rounded-none"
             @click.prevent="gotoUrl(data.shopUrl)"
-            >Uber Eats</a
-          >
+          >Uber Eats</a>
         </div>
       </div>
       <div class="block__body__section row border-t border-gray-300"></div>
@@ -100,11 +106,14 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
 export default {
+  emits: ["set-view", "select"],
   props: {
     fp_data: {
       default: [],
+    },
+    stickyTop: {
+      default: false,
     },
   },
   data() {
@@ -124,14 +133,6 @@ export default {
           : true;
       });
     },
-    ...mapState("map_module", {
-      focusMarker: "focusMarker",
-    }),
-  },
-  watch: {
-    focusMarker(newValue) {
-      // this.filterString = newValue.name;
-    },
   },
   methods: {
     gotoUrl(url) {
@@ -145,9 +146,6 @@ export default {
     setView(pos) {
       this.$emit("set-view", pos);
     },
-    ...mapMutations("map_module", {
-      selectInfo: "selectInfo",
-    }),
   },
 };
 </script>

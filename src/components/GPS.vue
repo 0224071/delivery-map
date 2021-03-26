@@ -22,7 +22,10 @@
     :style="postionStyle"
     @click="getPos(setView)"
   >
-    <i class="fa fa-crosshairs" aria-hidden="true"></i>
+    <i
+      class="fa fa-crosshairs"
+      aria-hidden="true"
+    ></i>
   </div>
 </template>
 
@@ -52,7 +55,6 @@ export default {
   computed: {
     postionStyle() {
       let { top, bottom, left, right } = this;
-      console.log(top, bottom, left, right);
       return {
         top: Number(top) + "px" || top,
         bottom: Number(bottom) + "px" || bottom,
@@ -89,7 +91,7 @@ export default {
         });
     },
     setView(pos) {
-        this.$emit("set-view", pos);
+      this.$emit("set-view", pos);
       this.$store.commit("map_module/setUserPos", pos);
     },
   },

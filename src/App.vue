@@ -1,11 +1,27 @@
 <template>
   <Aside title="外送查價平台">
-    <Card-list :fp_data="fp_data" @set-view="setView"></Card-list>
+    <template v-slot:default="AsideProps">
+      <CardList
+        :fp_data="fp_data"
+        @set-view="setView"
+        @select="selectIndex"
+        :sticky-top="AsideProps.stickyBodyTop"
+      ></CardList>
+    </template>
   </Aside>
 
   <main class="d-flex flex-column">
-    <GPS top="80" right="12" @set-view="setView" />
-    <Map class="map" :fp_data="fp_data" ref="map" />
+    <GPS
+      top="80"
+      right="12"
+      @set-view="setView"
+    />
+    <Map
+      class="map"
+      :fp_data="fp_data"
+      @select="selectIndex"
+      ref="map"
+    />
   </main>
 </template>
 
@@ -15,7 +31,7 @@ import Aside from "./components/Aside";
 import CardList from "./components/CardList";
 import GPS from "./components/GPS";
 
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapMutations } from "vuex";
 export default {
   name: "App",
   components: {
@@ -23,6 +39,11 @@ export default {
     Aside,
     CardList,
     GPS,
+  },
+  data() {
+    return {
+      stickyTop: false,
+    };
   },
   async mounted() {
     await this.setData();
@@ -37,6 +58,9 @@ export default {
   methods: {
     ...mapActions("fp_module", {
       setData: "setShopData",
+    }),
+    ...mapMutations("fp_module", {
+      selectIndex: "setIndex",
     }),
     setView(pos) {
       this.$refs.map.setView(pos);

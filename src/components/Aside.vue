@@ -133,21 +133,40 @@ $aside__button-color: $primary-color;
 </style>
 
 <template>
-  <aside class="aside" :class="{ 'aside--open': isOpen }">
-    <header class="aside__hedader" :style="headerShadow">
+  <aside
+    class="aside"
+    :class="{ 'aside--open': isOpen }"
+  >
+    <header
+      class="aside__hedader"
+      :style="headerShadow"
+    >
       <strong class="aside__hedader__title">
         <span>
           {{ title }}
         </span>
       </strong>
-      <button class="close aside__hedader__close" @click="isOpen = false">
-        <i class="fa fa-times" aria-hidden="true"></i>
+      <button
+        class="close aside__hedader__close"
+        @click="isOpen = false"
+      >
+        <i
+          class="fa fa-times"
+          aria-hidden="true"
+        ></i>
       </button>
     </header>
-    <div class="aside__body" ref="body" @scroll="scrollEvent">
-      <slot></slot>
+    <div
+      class="aside__body"
+      ref="body"
+      @scroll="scrollEvent"
+    >
+      <slot :sticky-body-top="stickyBodyTop"></slot>
     </div>
-    <div class="aside__switch" @click="toggle">
+    <div
+      class="aside__switch"
+      @click="toggle"
+    >
       <i
         class="fa"
         :class="{ 'fa-angle-right': !isOpen, 'fa-angle-left': isOpen }"
@@ -159,7 +178,10 @@ $aside__button-color: $primary-color;
       @click="gotoTop"
       v-show="scrollTop"
     >
-      <i class="fa fa-angle-up" aria-hidden="true"></i>
+      <i
+        class="fa fa-angle-up"
+        aria-hidden="true"
+      ></i>
     </div>
   </aside>
 </template>
@@ -175,6 +197,7 @@ export default {
     return {
       isOpen: true,
       scrollTop: 0,
+      stickyBodyTop: false,
     };
   },
   computed: {
@@ -190,6 +213,7 @@ export default {
     },
     scrollEvent(e) {
       this.scrollTop = e.target.scrollTop;
+      this.stickyBodyTop = e.target.scrollTop >= 100;
     },
     gotoTop() {
       this.$refs.body.scrollTop = 0;

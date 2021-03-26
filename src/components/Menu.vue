@@ -45,6 +45,7 @@ export default {
     this.$nextTick(() => {
       this.setMenuEl(this.menuRefs);
     });
+
   },
   watch: {
     list() {

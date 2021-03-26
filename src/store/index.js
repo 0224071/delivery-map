@@ -4,12 +4,15 @@ import axios from "axios";
 const fp_module = {
   state: () => ({
     info: null,
+    selectedIndex: null,
   }),
   mutations: {
     setData(state, { data }) {
       state.info = data;
     },
-
+    setIndex(state, index) {
+      state.selectedIndex = index;
+    },
   },
   actions: {
     async setShopData({ commit }) {
@@ -21,31 +24,24 @@ const fp_module = {
   getters: {
     infoFiltered(state) {
       if (!state.info) return [];
-      let newArr = [];
-      state.info.forEach((item) => {
-        if (item.info.location) {
-          item.info.location = item.info.location.split(",");
-          newArr.push(item);
-        }
+
+      return state.info.map((item, index) => {
+        item.info.location = item.info.location.split(",");
+        item.index = index;
+        return item;
       });
-      return newArr;
     },
   },
   namespaced: true,
 };
 const map_module = {
   state: () => ({
-    focusMarker: null,
     userPos: null,
   }),
   mutations: {
-    selectInfo(state, data) {
-      state.focusMarker = data;
-    },
     setUserPos(state, pos) {
       state.userPos = pos;
     },
-    
   },
   namespaced: true,
 };

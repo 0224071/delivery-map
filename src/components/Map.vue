@@ -1,26 +1,31 @@
 <style scoped lang="scss">
 @import url("https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap");
-.marker-text {
-  position: absolute;
-  top: 0px;
-  left: calc(100% + 5px);
-  word-break: keep-all;
-  line-height: 15px;
-  color: rgb(215, 15, 98);
-  text-shadow: rgba(37, 3, 17, 0.6) 0.5px 0.5px 1px;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: "Noto Sans TC", Comic Sans MS;
-  opacity: 0.8;
-  //  color: rgb(26, 26, 26);
-  // text-shadow: rgba(26, 26, 26, 0.3) 3px 2px 3px;
-  &--active {
-    font-size: 18px;
+.marker {
+  &__text {
+    position: absolute;
+    top: 0px;
+    left: calc(100% + 5px);
+    word-break: keep-all;
+    line-height: 15px;
+    color: rgb(215, 15, 98);
+    text-shadow: rgba(37, 3, 17, 0.6) 0.5px 0.5px 1px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: "Noto Sans TC", Comic Sans MS;
+    opacity: 0.8;
+    background-color: #fff;
+    padding: 2px;
+    //  color: rgb(26, 26, 26);
+    // text-shadow: rgba(26, 26, 26, 0.3) 3px 2px 3px;
   }
-}
-
-.marker-icon {
-  opacity: 0.8;
+  &__icon {
+    opacity: 0.8;
+  }
+  &.marker--active {
+    .marker__text {
+      font-size: 18px;
+    }
+  }
 }
 </style>
 <template>
@@ -42,54 +47,46 @@
       ref="layer"
       :max-zoom="maxZoom"
     ></l-tile-layer>
-    <l-marker :lat-lng="userPos" v-if="userPos">
+    <l-marker
+      :lat-lng="userPos"
+      v-if="userPos"
+    >
       <l-tooltip> 目前位置 </l-tooltip>
     </l-marker>
-    <!-- 當前選擇 -->
-    <l-marker
-      :lat-lng="focusMarker.info.location"
-      v-if="focusMarker"
-      ref="marker"
-      :key="focusMarker.name"
-    >
-      <l-icon>
-        <div class="relative">
-          <img
-            class="marker-icon"
-            :src="FpIconUrl"
-            alt=""
-            :style="iconActiveSize"
-          />
-        </div>
-      </l-icon>
-      <l-popup
-        ref="popup"
-        @ready="
-          $nextTick(() => {
-            $refs.marker.leafletObject.openPopup();
-          })
-        "
-      >
-        {{ focusMarker.name }}
-      </l-popup>
-    </l-marker>
+
     <!-- foodpanda -->
+
     <l-marker
       v-for="data in fp_data"
       :key="data.name"
       :lat-lng="data.info.location"
       :info="data"
-      @click="changeSearch($event, data)"
-     
+      @click="select(data,$event);setView(data.info.location)"
     >
       <l-icon>
-        <div class="relative" v-show="markerMinZoom < zoom">
-          <div class="marker-text" v-show="textMinZoom < zoom">
+        <div
+          class="marker"
+          :class="{'marker--active':data.index===selectedIndex}"
+        >
+          <div
+            class="marker__text"
+            v-show="zoom>textMinZoom"
+          >
             {{ data.name }}
           </div>
-          <img class="marker-icon" :src="FpIconUrl" alt="" :style="iconSize" />
+          <img
+            class="marker__icon"
+            :src="FpIconUrl"
+            alt=""
+            :style="data.index===selectedIndex?iconActiveSize:iconSize"
+          />
         </div>
       </l-icon>
+      <l-popup>
+        <div>
+          {{ data.name }}
+        </div>
+      </l-popup>
     </l-marker>
   </l-map>
 </template>
@@ -105,7 +102,7 @@ import {
   LControlZoom,
 } from "@vue-leaflet/vue-leaflet";
 import "leaflet/dist/leaflet.css";
-import { mapActions, mapMutations, mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 export default {
   components: {
     LMap,
@@ -147,11 +144,9 @@ export default {
 
   computed: {
     iconSize() {
-      // return [this.iconWidth, this.iconHeight];
       return { width: this.iconWidth + "px", height: this.iconHeight + "px" };
     },
     iconActiveSize() {
-      // return [this.iconWidth, this.iconHeight];
       return {
         width: this.iconWidth + 10 + "px",
         height: this.iconHeight + 10 + "px",
@@ -160,39 +155,48 @@ export default {
     iconUrl() {
       return `https://placekitten.com/${this.iconWidth}/${this.iconHeight}`;
     },
+    markerData() {
+      if (!this.fp_data) {
+        return [];
+      }
+      return this.fp_data.map((item) => {
+        if (this.focusMarker) {
+          item.selected = item.info.location === this.focusMarker.info.location;
+        } else {
+          item.selected = false;
+        }
+        return item;
+      });
+    },
+    ...mapState("fp_module", ["selectedIndex"]),
     ...mapState("map_module", {
+      focusMarker: "focusMarker",
+      markers: "markers",
       userPos(state) {
         return state.userPos;
       },
-    }),
-    ...mapState("map_module", {
-      focusMarker: "focusMarker",
     }),
   },
   methods: {
     ...mapActions("fp_module", {
       setMarkers: "setMarkersData",
     }),
-    ...mapMutations("map_module", {
-      selectInfo: "selectInfo",
-    }),
-    changeSearch(e, data) {
-      this.selectInfo(data);
+    select(data, e) {
+      this.$emit("select", data.index);
     },
     setView(pos) {
-      console.log(pos);
-      this.$refs.map.leafletObject.setView(pos, this.maxZoom);
+      this.$refs.map.leafletObject.setView(pos, this.maxZoom, {
+        animate: true,
+        pan: {
+          duration: 1,
+        },
+      });
     },
     zoomUpdate(newValue) {
       if (this.$refs.marker) {
         //縮小時取消已打開的Popup
         // this.$refs.marker.leafletObject.closePopup();
       }
-    },
-    isNoSelectThis(pos) {
-      if (!this.focusMarker) return true;
-      console.log( pos != this.focusMarker.info.location)
-      return pos != this.focusMarker.info.location;
     },
   },
 };
