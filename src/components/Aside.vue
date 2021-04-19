@@ -16,13 +16,13 @@ $aside__button-color: $primary-color;
 
 /* Track */
 ::-webkit-scrollbar-track {
-  // background: #f1f1f1;
+  //  background: #f1f1f1;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
   background: $primary-color;
-}
+}+
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
@@ -75,8 +75,18 @@ $aside__button-color: $primary-color;
     scroll-behavior: smooth;
     padding: 0.8rem 1.2rem;
     position: relative;
+    mask-image: linear-gradient(to top, transparent, black),
+      linear-gradient(to left, transparent 17px, black 17px);
+    mask-size: 100% 20000px;
+    mask-position: left bottom;
+    mask-image: linear-gradient(to top, transparent, black),
+      linear-gradient(to left, transparent 17px, black 17px);
+    mask-size: 100% 20000px;
+    mask-position: left bottom;
+    transition: mask-position 0.3s, -webkit-mask-position 0.3s;
     &:hover {
-      overflow-y: auto;
+      // overflow-y: auto;
+      mask-position: top right;
     }
   }
   &__switch {

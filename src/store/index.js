@@ -23,7 +23,7 @@ const fp_module = {
   },
   getters: {
     infoFiltered(state) {
-      if (!state.info) return [];
+      if (!state.info) return []; 
 
       return state.info.map((item, index) => {
         item.info.location = item.info.location.split(",");
